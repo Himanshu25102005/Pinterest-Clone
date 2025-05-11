@@ -166,5 +166,8 @@ hr {
 }
 
 .error{
-
+  font-weight: 500
+  color: red;
+  text-transform: capitalize;
+  margin: 7px 0px
 }
