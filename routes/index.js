@@ -14,11 +14,11 @@ router.get("/", (req, res, next) => {
 });
 
 router.get("/profile", isloggedin, (req, res) => {
-  res.send("profile");
+  res.render("profile");
 });
 
 router.get("/login", (req, res, next) => {
-  res.render("login");
+  res.render("login", {error: req.flash('error')});
 });
 
 router.get("/feed", (req, res, next) => {
@@ -43,7 +43,7 @@ router.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/profile",
-    failureRedirect: "/",
+    failureRedirect: "/login",
   }),
   (req, res) => {}
 );
