@@ -13,8 +13,13 @@ router.get("/", (req, res, next) => {
   res.render("index", { title: "Express" });
 });
 
-router.get("/profile", isloggedin, (req, res) => {
-  res.render("profile");
+router.get("/profile", isloggedin, async (req, res) => {
+  
+  const user = await userModel.findOne({
+    username: req.session.passport.user
+  })
+
+  res.render("profile", {user});
 });
 
 router.get("/login", (req, res, next) => {
@@ -29,7 +34,7 @@ router.post("/register", (req, res) => {
   const userData = new userModel({
     username: req.body.username,
     email: req.body.email,
-    fullName: req.body.fullname,
+    fullname: req.body.fullname,
   });
 
   userModel.register(userData, req.body.password).then(() => {
@@ -44,11 +49,12 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/profile",
     failureRedirect: "/login",
+    failureFlash: true
   }),
   (req, res) => {}
 );
 
-router.post("/logout", function (req, res, next) {
+router.get("/logout", function (req, res, next) {
   req.logout(function (err) {
     if (err) {
       return next(err);
@@ -59,6 +65,6 @@ router.post("/logout", function (req, res, next) {
 
 function isloggedin(req, res, next) {
   if (req.isAuthenticated()) return next();
-  res.redirect("/");
+  res.redirect("/login");
 }
 module.exports = router;
